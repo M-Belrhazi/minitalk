@@ -22,12 +22,20 @@ client: client.o $(LIB)
 
 re : fclean all
 
+bonus : server_bonus client_bonus
+
+server_bonus : server_bonus.o $(LIB)
+	$(CC) $(CFLAGS) server_bonus.o $(LIB) -o server_bonus
+
+client_bonus : client_bonus.o $(LIB)
+	$(CC) $(CFLAGS) client_bonus.o $(LIB) -o client_bonus
+
 clean :
-	rm -f client.o server.o
+	rm -f client.o server.o client_bonus.o server_bonus.o
 	make clean -C libftprintf
 
 fclean : clean
-	rm -f $(NAME) client
+	rm -f $(NAME) client server_bonus client_bonus
 	make fclean -C libftprintf
 
 .PHONY : all clean fclean re

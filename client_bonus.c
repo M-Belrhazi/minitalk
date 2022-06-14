@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   client.c                                           :+:      :+:    :+:   */
+/*   client_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbelrhaz <mbelrhaz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 22:25:44 by mbelrhaz          #+#    #+#             */
-/*   Updated: 2022/06/14 17:58:02 by mbelrhaz         ###   ########.fr       */
+/*   Updated: 2022/06/14 17:54:01 by mbelrhaz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,17 @@
 #include <string.h>
 #include "libftprintf/libftprintf.h"
 
-static int	g_received;
+static int	g_received[2] = {0};
 
 void	handler(int signum)
 {
-	(void)signum;
-	g_received = 1;
+	if (signum == SIGUSR1)
+		g_received[0] = 1;
+	if (signum == SIGUSR2)
+	{
+		ft_printf("OK! Message received :)\n");
+		g_received[1] = 1;
+	}
 }
 
 void	treat_char(char c, int pid)
@@ -34,17 +39,17 @@ void	treat_char(char c, int pid)
 	nb = 1;
 	while (i < (int) sizeof(c) * 8)
 	{
-		while (g_received != 1)
+		while (g_received[0] != 1)
 		{
 		}
 		if ((c & nb) == 0)
 		{
-			g_received = 0;
+			g_received[0] = 0;
 			kill(pid, SIGUSR1);
 		}
 		else
 		{
-			g_received = 0;
+			g_received[0] = 0;
 			kill(pid, SIGUSR2);
 		}
 		nb = nb * 2;
@@ -88,7 +93,7 @@ int	main(int argc, char **argv)
 	int					pid;
 	struct sigaction	act;
 
-	g_received = 1;
+	g_received[0] = 1;
 	if (argc != 3)
 	{
 		ft_printf("Specify PID and message, that's it\n");
@@ -104,6 +109,10 @@ int	main(int argc, char **argv)
 	sigemptyset(&act.sa_mask);
 	act.sa_flags = 0;
 	sigaction(SIGUSR1, &act, NULL);
+	sigaction(SIGUSR2, &act, NULL);
 	send_signals(argv[2], pid);
+	while (g_received[1] != 1)
+	{
+	}
 	return (0);
 }

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server.c                                           :+:      :+:    :+:   */
+/*   server_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbelrhaz <mbelrhaz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 22:24:24 by mbelrhaz          #+#    #+#             */
-/*   Updated: 2022/06/14 17:57:22 by mbelrhaz         ###   ########.fr       */
+/*   Updated: 2022/06/14 17:53:57 by mbelrhaz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #include <string.h>
 #include "libftprintf/libftprintf.h"
 
-void	fillstr(char c);
+void	fillstr(char c, int pid);
 
 void	handler(int signum, siginfo_t *info, void *ucontext)
 {
@@ -37,7 +37,7 @@ void	handler(int signum, siginfo_t *info, void *ucontext)
 		nb = 1;
 		c = tab[0] | tab[1] | tab[2] | tab[3]
 			| tab[4] | tab[5] | tab[6] | tab[7];
-		fillstr(c);
+		fillstr(c, info->si_pid);
 		kill(info->si_pid, SIGUSR1);
 		return ;
 	}
@@ -57,7 +57,7 @@ char	*ft_create_one_char_str(char c)
 	return (one);
 }
 
-void	fillstr(char c)
+void	fillstr(char c, int pid)
 {
 	static char	*superstr;
 	char		*one;
@@ -75,6 +75,7 @@ void	fillstr(char c)
 		ft_printf("%s\n", superstr);
 		free(superstr);
 		superstr = NULL;
+		kill(pid, SIGUSR2);
 		return ;
 	}
 	one = ft_create_one_char_str(c);
