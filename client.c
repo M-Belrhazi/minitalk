@@ -6,7 +6,7 @@
 /*   By: mbelrhaz <mbelrhaz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 22:25:44 by mbelrhaz          #+#    #+#             */
-/*   Updated: 2022/06/14 17:58:02 by mbelrhaz         ###   ########.fr       */
+/*   Updated: 2022/12/09 11:32:18 by mbelrhaz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,7 @@ int	main(int argc, char **argv)
 		return (2);
 	}
 	act.sa_handler = &handler;
+	//act.sa_sigaction = &handler;
 	sigemptyset(&act.sa_mask);
 	act.sa_flags = 0;
 	sigaction(SIGUSR1, &act, NULL);
